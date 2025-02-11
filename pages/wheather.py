@@ -7,7 +7,7 @@ st.set_page_config(page_title="Weather App", page_icon="🌦️", layout="center
 # Main function to run the Streamlit app
 def main():
     # Title with emoji
-    st.title("🌦️ Weather Forecasting with LLM")
+    st.title("🌦️ Weather Forecasting")
     st.write("Get real-time weather updates and a 3-day forecast for any city!")
 
     # Sidebar configuration
