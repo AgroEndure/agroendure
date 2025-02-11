@@ -1,14 +1,11 @@
 import streamlit as st
 import google.generativeai as genai
 from pathlib import Path
-from dotenv import load_dotenv
 import os
 
-# Load environment variables from a .env file
-load_dotenv()
-
-# Configure the GenerativeAI API key using the loaded environment variable
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+# Configure the GenerativeAI API key directly
+GOOGLE_API_KEY = "AIzaSyAsypRsR__geKRWtrVv9AnLwgpKqLuu6f0"
+genai.configure(api_key=GOOGLE_API_KEY)
 
 # Set up the model configuration for text generation
 generation_config = {
