@@ -3,11 +3,10 @@ import pandas as pd
 import openai
 import os
 import re
-from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Set OpenAI API key directly
+OPENAI_API_KEY = "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"  # Replace with your actual API key
+openai.api_key = OPENAI_API_KEY
 
 # Function to fetch ideal NPK values for a crop using OpenAI
 def fetch_ideal_npk(crop):
@@ -24,8 +23,6 @@ def fetch_ideal_npk(crop):
             max_tokens=100
         )
         content = response['choices'][0]['message']['content'].strip()
-
-        # Extract numeric values using regex
         values = re.findall(r'\d+', content)
         if len(values) == 3:
             return {"N": int(values[0]), "P": int(values[1]), "K": int(values[2])}
@@ -37,7 +34,7 @@ def fetch_ideal_npk(crop):
 # Function to load NPK values from dummydata.csv
 def load_npk_from_csv(file_path="dummydata.csv"):
     data = pd.read_csv(file_path, header=None)
-    nitrogen, phosphorus, potassium = data.iloc[0].values[:3]  # First three values (NPK)
+    nitrogen, phosphorus, potassium = data.iloc[0].values[:3]
     return nitrogen, phosphorus, potassium
 
 # Function to compare NPK values and suggest improvements
@@ -46,7 +43,7 @@ def analyze_soil_npk(crop):
     ideal_npk = fetch_ideal_npk(crop)
     
     if isinstance(ideal_npk, str):
-        return ideal_npk  # Return error message if fetching failed
+        return ideal_npk  
     
     recommendations = []
     if nitrogen < ideal_npk['N']:
@@ -82,7 +79,7 @@ def get_organic_amendments(recommendations):
         return f"Error: {str(e)}"
 
 # Streamlit UI
-st.title("🌱 Soil Nutrient Analysis")
+st.title("\U0001F331 Soil Nutrient Analysis")
 st.write("Enter the crop name to analyze soil NPK levels and get organic amendment suggestions.")
 
 # User input
