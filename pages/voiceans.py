@@ -31,7 +31,7 @@ def fetch_ai_response(input_text):
         model="gpt-3.5-turbo",  
         messages=[{"role": "user", "content": input_text}],
         temperature=0.7,
-        max_tokens=200
+        max_tokens=4000
     )
     return response["choices"][0]["message"]["content"]
 
@@ -45,7 +45,7 @@ def main():
     st.sidebar.title("🔑 API Key Configuration")
     api_key = st.sidebar.text_input("اپنا OpenAI API کلید درج کریں", type="password")
 
-    st.title("🗣️ Aurora SpeakEasy - اردو")
+    st.title("🗣️ AgroEndure SpeakEasy - اردو")
     st.write("السلام علیکم! مجھ سے بات کرنے کے لئے نیچے ریکارڈنگ کا بٹن دبائیں۔")
 
     if api_key:
