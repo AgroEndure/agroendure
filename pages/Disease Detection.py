@@ -3,85 +3,62 @@ import google.generativeai as genai
 from pathlib import Path
 import os
 
-# -------------------------------
-# 🔑 Configure Google Gemini API
-# -------------------------------
-GOOGLE_API_KEY = "AIzaSyBDul6jJbpOB0fkOXeAuzBawb_weCag4jE"  # <-- Replace with your key
+# --- MANUAL GOOGLE API KEY ---
+GOOGLE_API_KEY = "AIzaSyBDul6jJbpOB0fkOXeAuzBawb_weCag4jE"  # 🔑 Replace with your actual key
 genai.configure(api_key=GOOGLE_API_KEY)
 
-# Initialize the Gemini model
-# "gemini-1.5-flash" is fast and supports image input
-model = genai.GenerativeModel("gemini-1.5-flash")
+# --- USE A STABLE MODEL NAME ---
+# "gemini-1.5-flash" may not work in all regions, so use gemini-1.0-pro for full compatibility
+model = genai.GenerativeModel(model_name="gemini-1.0-pro")
 
-# -------------------------------
-# 📸 Helper Function
-# -------------------------------
+# --- Function: Read image data ---
 def read_image_data(file_path):
     image_path = Path(file_path)
     if not image_path.exists():
-        raise FileNotFoundError(f"Image not found: {image_path}")
-    # Google Gemini expects binary image data with a MIME type
+        raise FileNotFoundError(f"Could not find image: {image_path}")
     return {"mime_type": "image/jpeg", "data": image_path.read_bytes()}
 
-# -------------------------------
-# 🤖 AI Generation Function
-# -------------------------------
+# --- Function: Generate AI response from image ---
 def generate_gemini_response(prompt, image_path):
-    try:
-        image_data = read_image_data(image_path)
-        response = model.generate_content([prompt, image_data])
-        return response.text
-    except Exception as e:
-        return f"⚠️ Error generating response: {e}"
+    image_data = read_image_data(image_path)
+    response = model.generate_content([prompt, image_data])
+    return response.text
 
-# -------------------------------
-# 🧠 Plant Disease Prompt
-# -------------------------------
+# --- Prompt for Gemini ---
 input_prompt = """
-You are an expert plant pathologist. Analyze the uploaded leaf image to identify potential plant diseases.
-
-Provide the following details:
-1. Disease Name and Type (fungal, bacterial, viral, or environmental).
-2. Description of visible symptoms.
-3. Probable Cause or Source.
-4. Organic/Natural Remedies that farmers can apply.
-5. Preventive Measures for future.
-6. Any additional environmental or nutrient advice (e.g., pH level, water condition).
-
-Keep your explanation simple, clear, and friendly for farmers.
-End with: "⚠️ This is an AI-based analysis. Consult an agricultural expert for confirmation."
+You are an expert plant pathologist.
+Analyze the uploaded leaf image to identify any possible plant diseases.
+1. Identify the disease name (if any).
+2. Describe visible symptoms (color, spots, dryness, etc.).
+3. Suggest an organic treatment using natural or home-based methods.
+4. Give preventive advice for future crop safety.
+Make the response easy to understand for farmers.
 """
 
-# -------------------------------
-# 🌿 Streamlit UI
-# -------------------------------
-st.set_page_config(page_title="Leaf Disease Detection | AgroEndure", layout="centered")
-st.title("🌱 AgroEndure - Leaf Disease Detection")
-st.write("Upload a leaf image below. The AI will identify possible diseases and suggest organic solutions.")
+# --- Streamlit UI ---
+st.title("🌿 AgroEndure: Leaf Disease Detection AI")
+st.write("Upload a clear photo of a leaf to detect diseases and get organic remedies.")
 
-uploaded_file = st.file_uploader("📤 Upload a Leaf Image", type=["jpg", "jpeg", "png"])
+uploaded_file = st.file_uploader("📸 Upload Leaf Image", type=["jpg", "jpeg", "png"])
 
-if uploaded_file:
+if uploaded_file is not None:
     try:
-        # Save temporarily
+        # Save uploaded image temporarily
         file_path = f"temp_{uploaded_file.name}"
         with open(file_path, "wb") as f:
             f.write(uploaded_file.read())
 
-        # Show the uploaded image
-        st.image(file_path, caption="🖼️ Uploaded Leaf Image", use_container_width=True)
-
-        with st.spinner("Analyzing leaf... 🌿"):
+        # Analyze the image
+        with st.spinner("🧠 Analyzing leaf image... Please wait"):
             result = generate_gemini_response(input_prompt, file_path)
 
-        st.success("✅ Analysis Complete!")
-        st.text_area("AI Disease Analysis Report", result, height=350)
+        # Display results
+        st.image(file_path, caption="Uploaded Leaf", use_column_width=True)
+        st.text_area("🧾 AI Disease Analysis & Recommendations", result, height=300)
 
-        # Clean up the temp file
+        # Cleanup temp file
         os.remove(file_path)
 
     except Exception as e:
         st.error(f"❌ Error processing the image: {e}")
-else:
-    st.info("📷 Please upload a leaf image to start the analysis.")
 
