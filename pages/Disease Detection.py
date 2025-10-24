@@ -4,7 +4,7 @@ from pathlib import Path
 import os
 
 # Configure the GenerativeAI API key directly
-GOOGLE_API_KEY = "AIzaSyAsypRsR__geKRWtrVv9AnLwgpKqLuu6f0"
+GOOGLE_API_KEY = "AIzaSyBDul6jJbpOB0fkOXeAuzBawb_weCag4jE"
 genai.configure(api_key=GOOGLE_API_KEY)
 
 # Set up the model configuration for text generation
@@ -82,3 +82,4 @@ if uploaded_file is not None:
 
     except Exception as e:
         st.error(f"Error processing the image: {e}")
+
