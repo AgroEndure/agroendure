@@ -3,7 +3,7 @@ import streamlit as st
 import os
 
 # Set OpenAI API key directly
-OPENAI_API_KEY = "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"  # Replace with your actual API key
+OPENAI_API_KEY = "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"  # Replace with your actual API key
 openai.api_key = OPENAI_API_KEY
 
 # Function to get pH recommendation from OpenAI API
@@ -50,3 +50,4 @@ def streamlit_interface():
 
 if __name__ == "__main__":
     streamlit_interface()
+
